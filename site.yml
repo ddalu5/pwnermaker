@@ -1,0 +1,59 @@
+---
+
+- hosts: all
+  tasks:
+  - name: Update apt packages
+    apt:
+      update_cache: yes
+    become: yes
+    tags:
+      - system
+
+  - name: Install aptitude package
+    apt:
+      name: aptitude
+    become: yes
+    tags:
+      - system
+
+  - name: Upgrade apt installed packages
+    apt:
+      upgrade: yes
+    become: yes
+    tags:
+      - system
+
+  - name: Install GIT
+    apt:
+      name: git
+    become: yes
+    tags:
+      - tools
+
+  - name: install sshuttle
+    apt:
+      name: sshuttle
+    become: yes
+    tags:
+      - tools
+      - poor-man-vpn
+
+- hosts: web
+  tasks:
+    - name: Clone SQLMap
+      git:
+        repo: https://github.com/sqlmapproject/sqlmap.git
+        depth: 1
+        dest: "{{ SQLMAP_DIR }}"
+      tags:
+        - tools
+        - infosec
+        - db
+
+    - name: Create symbolic link to sqlmap.py in /usr/bin/
+      file:
+        src: "{{ SQLMAP_DIR }}/sqlmap.py"
+        dest: /usr/bin/sqlmap
+        state: link
+      tags:
+        - settings
