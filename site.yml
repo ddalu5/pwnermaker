@@ -38,6 +38,31 @@
       - tools
       - poor-man-vpn
 
+  - name: Clone ExploitDB
+    git:
+      repo: https://github.com/offensive-security/exploitdb.git
+      dest: "{{ EXPLOITDB_DIR }}"
+    tags:
+      - tools
+      - infosec
+      - db
+      - exploits
+
+  - name: Create symbolic link to searchsploit in /usr/bin/
+    file:
+      src: "{{ EXPLOITDB_DIR }}/searchsploit"
+      dest: /usr/bin/searchsploit
+      state: link
+    tags:
+      - settings
+
+  - name: Copy ExploitDB rc file to home
+    copy:
+      src: "{{ EXPLOITDB_DIR }}/.searchsploit_rc"
+      dest: ~/
+    tags:
+      - settings
+
 - hosts: web
   tasks:
     - name: Clone SQLMap
